@@ -1,0 +1,22 @@
+name: help-command
+on:
+  repository_dispatch:
+    types: [help-command]
+jobs:
+  help:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ secrets.PAT }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          body: |
+            > Command | Description
+            > --- | ---
+            > /rebase | Rebase the pull request on current head
+            > /black | Run `black` on the current pull request
+            > /isort | Run `isort` on the current pull request
+            > /help | Receive this friendly help
+          reaction-type: hooray
