@@ -18,4 +18,6 @@ jobs:
             > /format | Apply code formatting (black and isort) to the pull request
             > /rebase | Rebase the pull request on current head
             > /help | Receive this friendly help
+            > /isort | Apply the isort stage of code formatting
+            > /black | Apply the black stage of code formatting
           reaction-type: hooray
