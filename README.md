@@ -7,6 +7,7 @@ GitHub Action.
 This currently includes:
 
  * `/isort`
+ * `/flynt`
  * `/black`
  * `/rebase`
  * `/help`
