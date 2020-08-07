@@ -1,0 +1,44 @@
+name: flynt-command
+on:
+  repository_dispatch:
+    types: [flynt-command]
+jobs:
+  flynt:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the pull request branch
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT }}
+          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.client_payload.pull_request.head.ref }}
+
+      # Setup Python environment
+      - uses: actions/setup-python@v1
+
+      # Install flynt
+      - name: Install flynt
+        run: pip install flynt
+
+      # Execute flynt in check mode
+      - name: flynt
+        id: flynt
+        run: echo ::set-output name=format::$(flynt --fail-on-change -n yt/ --exclude yt/extern || echo "true")
+
+      # Execute flynt and commit the change to the PR branch
+      - name: Commit to the PR branch
+        if: steps.flynt.outputs.format == 'true'
+        run: |
+          flynt yt/ --exclude-dir yt/extern
+          git config --global user.name 'yt-fido'
+          git config --global user.email 'yt.fido@gmail.com'
+          git commit -am "[flynt-command] fixes"
+          git push
+
+      - name: Add reaction
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ secrets.PAT }}
+          repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
+          comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
+          reaction-type: hooray
