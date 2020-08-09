@@ -17,8 +17,8 @@ jobs:
       - uses: actions/setup-python@v1
 
       # Install black and isort
-      - name: Install black and isort
-        run: pip install black isort
+      - name: Install black, isort and flynt
+        run: pip install black isort flynt
 
       # Execute black in check mode
       - name: Black
@@ -30,12 +30,18 @@ jobs:
         id: isort
         run: echo ::set-output name=format::$(isort --check --quiet . || echo "true")
 
+      # Execute isort in check mode
+      - name: flynt
+        id: flynt
+        run: echo ::set-output name=format::$(flynt --fail-on-change --dry-run yt/ --exclude yt/extern || echo "true")
+
       # Execute black and isort and commit the change to the PR branch
       - name: Commit to the PR branch
         if: steps.black.outputs.format == 'true' || steps.isort.outputs.format == 'true'
         run: |
           black .
           isort .
+          flynt yt/ --exclude-dir yt/extern
           git config --global user.name 'yt-fido'
           git config --global user.email 'yt.fido@gmail.com'
           git commit -am "[format-command] fixes"
