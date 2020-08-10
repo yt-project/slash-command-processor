@@ -18,7 +18,7 @@ jobs:
 
       # Install isort
       - name: Install isort
-        run: pip install isort
+        run: pip install -U "isort>=5.1"
 
       # Execute isort in check mode
       - name: isort
