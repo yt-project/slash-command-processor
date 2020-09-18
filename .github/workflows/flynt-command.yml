@@ -23,7 +23,9 @@ jobs:
       # Execute flynt in check mode
       - name: flynt
         id: flynt
-        run: echo ::set-output name=format::$(flynt --fail-on-change -n yt/ --exclude yt/extern || echo "true")
+        run: |
+          flynt --version
+          echo ::set-output name=format::$(flynt --fail-on-change -n yt/ --exclude yt/extern || echo "true")
 
       # Execute flynt and commit the change to the PR branch
       - name: Commit to the PR branch

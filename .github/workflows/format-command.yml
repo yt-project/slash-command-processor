@@ -18,22 +18,30 @@ jobs:
 
       # Install black and isort
       - name: Install black, isort and flynt
-        run: pip install black isort flynt
+        run: |
+          python --version 
+          pip install black isort flynt
 
       # Execute black in check mode
       - name: Black
         id: black
-        run: echo ::set-output name=format::$(black --check --quiet . || echo "true")
+        run: |
+          black --version
+          echo ::set-output name=format::$(black --check --quiet . || echo "true")
 
       # Execute isort in check mode
       - name: isort
         id: isort
-        run: echo ::set-output name=format::$(isort --check --quiet . || echo "true")
+        run: |
+          isort --version
+          echo ::set-output name=format::$(isort --check --quiet . || echo "true")
 
       # Execute isort in check mode
       - name: flynt
         id: flynt
-        run: echo ::set-output name=format::$(flynt --fail-on-change --dry-run yt/ --exclude yt/extern || echo "true")
+        run: |
+          flynt --version
+          echo ::set-output name=format::$(flynt --fail-on-change --dry-run yt/ --exclude yt/extern || echo "true")
 
       # Execute black and isort and commit the change to the PR branch
       - name: Commit to the PR branch
